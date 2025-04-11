@@ -98,9 +98,9 @@ fun SignUp(nav: NavController) {
         Text("Register", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         Sh(40.dp)
         AuthField(name, { name = it }, label = "姓名", isError = false)
-        AuthField(name, { name = it }, label = "姓名", isError = false)
-        AuthField(name, { name = it }, label = "姓名", isError = false)
-        AuthField(name, { name = it }, label = "姓名", isError = false)
+        AuthField(name, { name = it }, label = "Email", isError = false)
+        AuthField(name, { name = it }, label = "密碼", isError = false)
+        AuthField(name, { name = it }, label = "再次輸入密碼", isError = false)
         Sh(40.dp)
         Button(onClick = {}) {
             Text("註冊")
