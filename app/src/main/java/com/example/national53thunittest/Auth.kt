@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -86,6 +88,7 @@ fun SignIn(nav: NavController, textFieldColors: TextFieldColors) {
 
 @Composable
 fun SignUp(nav: NavController) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -102,7 +105,14 @@ fun SignUp(nav: NavController) {
         AuthField(name, { name = it }, label = "密碼", isError = false)
         AuthField(name, { name = it }, label = "再次輸入密碼", isError = false)
         Sh(40.dp)
-        Button(onClick = {}) {
+        fun checkFormat() {
+            if (name.isEmpty() || name.length > 10) {
+                toaster(context, getError(context, "RegistrationPage").errorMeg1_1.toString())
+            }
+        }
+        Button(onClick = {
+            checkFormat()
+        }) {
             Text("註冊")
         }
     }
