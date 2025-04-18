@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -34,12 +35,15 @@ fun AuthField(
     label: String = "",
     isError: Boolean = false,
     isPassword: Boolean = false,
+    tag: String = ""
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
         placeholder = { Text(label) },
-        modifier = Modifier.padding(vertical = 5.dp),
+        modifier = Modifier
+            .padding(vertical = 5.dp)
+            .testTag(tag),
         colors =
             TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -68,6 +72,7 @@ fun SignIn(nav: NavController, textFieldColors: TextFieldColors) {
             value = email,
             onValueChange = { email = it },
             label = "電子郵件",
+            tag = "hello"
         )
         AuthField(
             value = password,
@@ -80,7 +85,10 @@ fun SignIn(nav: NavController, textFieldColors: TextFieldColors) {
             Text("登入")
         }
         Sh()
-        FilledTonalButton(onClick = { nav.navigate(Screens.SignUp.name) }) {
+        FilledTonalButton(
+            onClick = { nav.navigate(Screens.SignUp.name) },
+            modifier = Modifier.testTag("nav_signUp")
+        ) {
             Text("註冊")
         }
     }
@@ -101,13 +109,40 @@ fun SignUp(nav: NavController) {
         Text("Register", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         Sh(40.dp)
         AuthField(name, { name = it }, label = "姓名", isError = false)
-        AuthField(name, { name = it }, label = "Email", isError = false)
-        AuthField(name, { name = it }, label = "密碼", isError = false)
-        AuthField(name, { name = it }, label = "再次輸入密碼", isError = false)
+        AuthField(email, { email = it }, label = "Email", isError = false)
+        AuthField(password, { password = it }, label = "密碼", isError = false)
+        AuthField(passwordCheck, { passwordCheck = it }, label = "再次輸入密碼", isError = false)
         Sh(40.dp)
         fun checkFormat() {
+            val errorMsg = getError(context, "RegistrationPage")
+            var error = false
             if (name.isEmpty() || name.length > 10) {
-                toaster(context, getError(context, "RegistrationPage").errorMeg1_1.toString())
+                toaster(
+                    context,
+                    errorMsg?.errorMeg2_2.toString()
+                )
+                error = true
+            }
+            if (email.isEmpty() || email.length > 30 || !android.util.Patterns.EMAIL_ADDRESS.matcher(
+                    email
+                ).matches()
+            ) {
+                toaster(context, errorMsg?.errorMeg2_3.toString())
+                error = true
+            }
+            if (password.isEmpty() || !password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,15}$".toRegex())) {
+                toaster(
+                    context,
+                    errorMsg?.errorMeg2_4.toString()
+                )
+                error = true
+            }
+            if (password != passwordCheck) {
+                toaster(context, errorMsg?.errorMeg2_1.toString())
+                error = true
+            }
+            if (!error) {
+
             }
         }
         Button(onClick = {

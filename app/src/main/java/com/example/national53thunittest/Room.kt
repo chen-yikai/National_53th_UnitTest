@@ -1,6 +1,5 @@
 package com.example.national53thunittest
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Dao
@@ -9,7 +8,6 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.launch
 
@@ -36,13 +34,6 @@ interface UserDao {
 @Database(entities = [Users::class], version = 1)
 abstract class RoomDataBase : RoomDatabase() {
     abstract fun UserDao(): UserDao
-}
-
-fun getRoomDataBase(context: Context): RoomDataBase {
-    return Room
-        .databaseBuilder(context.applicationContext, RoomDataBase::class.java, "db")
-        .fallbackToDestructiveMigration()
-        .build()
 }
 
 class UsersModel(private val db: RoomDataBase) : ViewModel() {
