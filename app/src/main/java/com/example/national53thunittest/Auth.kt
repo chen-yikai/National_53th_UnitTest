@@ -1,18 +1,33 @@
 package com.example.national53thunittest
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.graphics.drawable.Icon
 import android.util.Log
+import android.util.Patterns
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,7 +57,8 @@ fun AuthField(
     label: String = "",
     isError: Boolean = false,
     isPassword: Boolean = false,
-    tag: String = ""
+    tag: String = "",
+    trailingIcon: @Composable () -> Unit = {}
 ) {
     TextField(
         value = value,
@@ -58,7 +75,8 @@ fun AuthField(
             ),
         singleLine = true,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        isError = isError
+        isError = isError,
+        trailingIcon = trailingIcon
     )
 }
 
@@ -71,6 +89,16 @@ fun SignIn() {
     val usersModel = UsersModel(db)
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var showAlert by remember { mutableStateOf(false) }
+    val alertMsg = remember { mutableStateListOf<String>() }
+
+    if (showAlert) {
+        AuthAlertDialog(
+            msg = alertMsg,
+            dismiss = { showAlert = false },
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -93,18 +121,21 @@ fun SignIn() {
         )
         Sh(40.dp)
         Button(onClick = {
-//            val authed = usersModel.signIn(email, password)
-//            Log.i("kitty", authed.toString())
-//            if (authed) {
-//                nav.navigate(Screens.Home.name)
-//            }
-            scope.launch {
-                val authed = usersModel.signIn(email, password)
-                if (authed) {
-                    nav.navigate(Screens.Home.name)
-                } else {
-                    toaster(context, "登入失敗")
+            val errorMsg = getError(context, "LoginPage")
+            alertMsg.clear()
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                scope.launch {
+                    val authed = usersModel.signIn(email, password)
+                    if (authed) {
+                        nav.navigate(Screens.Home.name)
+                    } else {
+                        alertMsg.add(errorMsg?.errorMeg1_2.toString())
+                        showAlert = true
+                    }
                 }
+            } else {
+                alertMsg.add(errorMsg?.errorMeg1_1.toString())
+                showAlert = true
             }
         }) {
             Text("登入")
@@ -119,6 +150,25 @@ fun SignIn() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AuthAlertDialog(msg: List<String>, dismiss: () -> Unit) {
+    AlertDialog(
+        title = { Text("錯誤訊息") },
+        text = {
+            LazyColumn {
+                items(msg) {
+                    Text(it)
+                }
+            }
+        },
+        onDismissRequest = dismiss,
+        confirmButton = {
+            TextButton(onClick = dismiss) { Text("確定") }
+        },
+    )
+}
+
 @Composable
 fun SignUp() {
     val nav = LocalRootNavController.current
@@ -129,6 +179,17 @@ fun SignUp() {
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordCheck by remember { mutableStateOf("") }
+
+    var showAlert by remember { mutableStateOf(false) }
+    val alertMsg = remember { mutableStateListOf<String>() }
+
+    if (showAlert) {
+        AuthAlertDialog(
+            msg = alertMsg,
+            dismiss = { showAlert = false },
+        )
+    }
+
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -138,39 +199,63 @@ fun SignUp() {
         Sh(40.dp)
         AuthField(name, { name = it }, label = "姓名", isError = false)
         AuthField(email, { email = it }, label = "Email", isError = false)
-        AuthField(password, { password = it }, label = "密碼", isError = false)
-        AuthField(passwordCheck, { passwordCheck = it }, label = "再次輸入密碼", isError = false)
+        var showPassword by remember { mutableStateOf(false) }
+        AuthField(
+            password,
+            { password = it },
+            label = "密碼",
+            isPassword = showPassword,
+            trailingIcon = {
+                IconButton(onClick = { showPassword = !showPassword }) {
+                    Icon(
+                        painter = painterResource(if (showPassword) R.drawable.visibility else R.drawable.visibility_off),
+                        contentDescription = ""
+                    )
+                }
+            })
+        var showPasswordCheck by remember { mutableStateOf(false) }
+        AuthField(
+            passwordCheck,
+            { passwordCheck = it },
+            label = "再次輸入密碼",
+            isError = false,
+            trailingIcon = {
+                IconButton(onClick = { showPasswordCheck = !showPasswordCheck }) {
+                    Icon(
+                        painter = painterResource(if (showPasswordCheck) R.drawable.visibility else R.drawable.visibility_off),
+                        contentDescription = ""
+                    )
+                }
+            }
+        )
         Sh(40.dp)
         fun checkFormat() {
+            alertMsg.clear()
             val errorMsg = getError(context, "RegistrationPage")
             var error = false
-            if (name.isEmpty() || name.length > 10) {
-                toaster(
-                    context,
-                    errorMsg?.errorMeg2_2.toString()
-                )
+            if (name.isEmpty() || name.length > 30) {
+                alertMsg.add(errorMsg?.errorMeg2_2.toString())
                 error = true
             }
-            if (email.isEmpty() || email.length > 30 || !android.util.Patterns.EMAIL_ADDRESS.matcher(
-                    email
-                ).matches()
+            if (email.isEmpty() || email.length > 30 || !Patterns.EMAIL_ADDRESS.matcher(email)
+                    .matches()
             ) {
-                toaster(context, errorMsg?.errorMeg2_3.toString())
+                alertMsg.add(errorMsg?.errorMeg2_3.toString())
                 error = true
             }
             if (password.isEmpty() || !password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,15}$".toRegex())) {
-                toaster(
-                    context,
-                    errorMsg?.errorMeg2_4.toString()
-                )
+                alertMsg.add(errorMsg?.errorMeg2_4.toString())
                 error = true
             }
             if (password != passwordCheck) {
-                toaster(context, errorMsg?.errorMeg2_1.toString())
+                alertMsg.add(errorMsg?.errorMeg2_1.toString())
                 error = true
             }
+
             if (!error) {
                 usersModel.signUp(name, email, password)
+            } else {
+                showAlert = true
             }
         }
         Button(onClick = {

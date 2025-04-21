@@ -23,6 +23,9 @@ data class Users(
 
 @Dao
 interface UserDao {
+    @Query("SELECT 1")
+    suspend fun alive(): Int
+
     @Insert
     suspend fun insertUser(user: Users)
 
@@ -48,6 +51,13 @@ abstract class RoomDataBase : RoomDatabase() {
 
 class UsersModel(private val room: RoomDataBase) : ViewModel() {
     val db = room.UserDao()
+
+    init {
+        viewModelScope.launch {
+            db.alive()
+        }
+    }
+
     fun signUp(name: String, email: String, password: String) {
         val user = Users(name = name, email = email, password = password)
         viewModelScope.launch {
