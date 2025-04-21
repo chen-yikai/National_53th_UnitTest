@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.national53thunittest.ui.theme.National53thUnitTestTheme
 
-val LocalRootNavController = compositionLocalOf<NavHostController> { error("") }
+val LocalAuthNavController = compositionLocalOf<NavHostController> { error("") }
 val LocalRoomDataBase = compositionLocalOf<RoomDataBase> { error("") }
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 CompositionLocalProvider(
-                    LocalRootNavController provides navController,
+                    LocalAuthNavController provides navController,
                     LocalRoomDataBase provides db
                 ) {
                     Router()

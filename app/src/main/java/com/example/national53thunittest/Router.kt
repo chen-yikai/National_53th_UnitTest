@@ -1,26 +1,23 @@
 package com.example.national53thunittest
 
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.national53thunittest.main.HomeScreen
+import com.example.national53thunittest.main.Main
 
 @Composable
 fun Router() {
-    val navController = LocalRootNavController.current
+    val navController = LocalAuthNavController.current
     val context = LocalContext.current
 
-    NavHost(navController = navController, startDestination = Screens.SignIn.name) {
-        composable(Screens.SignIn.name) { SignIn() }
-        composable(Screens.SignUp.name) { SignUp() }
-        composable(Screens.Home.name) { HomeScreen() }
+    NavHost(navController = navController, startDestination = AuthScreens.Main.name) {
+        composable(AuthScreens.SignIn.name) { SignIn() }
+        composable(AuthScreens.SignUp.name) { SignUp() }
+        composable(AuthScreens.Main.name) { Main() }
     }
 }
 
-enum class Screens {
-    Home, SignIn, SignUp, AccountInfo, News
+enum class AuthScreens {
+    Main, SignIn, SignUp
 }

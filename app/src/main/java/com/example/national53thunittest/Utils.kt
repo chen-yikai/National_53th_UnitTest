@@ -38,3 +38,19 @@ fun getError(context: Context, page: String): Error? {
         return data.find { item -> item.page == page }
     }
 }
+
+data class News(
+    @SerializedName("ID") val id: Int,
+    @SerializedName("Publish Date") val publishDate: String,
+    @SerializedName("Title") val title: String,
+    @SerializedName("Organizer") val organizer: String,
+    @SerializedName("Views") val views: Int,
+    @SerializedName("Content") val content: String
+)
+
+fun getNews(context: Context): List<News> {
+    context.assets.open("1.最新消息.json").bufferedReader().use {
+        val data = Gson().fromJson(it, Array<News>::class.java).toList()
+        return data
+    }
+}
