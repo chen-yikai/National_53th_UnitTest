@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -25,7 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -33,7 +32,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,6 +55,11 @@ fun NewsScreen() {
     val nav = LocalMainNavController.current
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
+    var sortBy by remember { mutableIntStateOf(0) }
+    val news = getNews(context)
+
+    LaunchedEffect(sortBy) {
+    }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -76,31 +81,34 @@ fun NewsScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                var searchInput by remember { mutableStateOf("") }
                 AuthField(
-                    searchQuery,
-                    { searchQuery = it },
+                    searchInput,
+                    { searchInput = it },
                     "搜尋",
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                 )
                 Spacer(Modifier.width(10.dp))
-                FilledTonalButton(onClick = {}) {
+                FilledTonalButton(onClick = {
+                    searchQuery = searchInput
+                }) {
                     Icon(Icons.Default.Search, contentDescription = "")
                 }
             }
             Spacer(Modifier.height(10.dp))
             val items = listOf<String>("編號", "發布日期", "瀏覽數")
-            var selectedItem by remember { mutableIntStateOf(0) }
-            val news = getNews(context)
-            LazyColumn {
+            LazyColumn(Modifier.clip(RoundedCornerShape(20.dp))) {
                 stickyHeader {
                     Spacer(Modifier.height(11.dp))
                     SingleChoiceSegmentedButtonRow(modifier = androidx.compose.ui.Modifier.Companion.fillMaxWidth()) {
                         items.fastForEachIndexed { index, item ->
                             SegmentedButton(
-                                selected = index == selectedItem,
-                                onClick = { selectedItem = index },
+                                selected = index == sortBy,
+                                onClick = {
+                                    sortBy = index
+                                },
                                 shape = SegmentedButtonDefaults.itemShape(index, items.size)
                             ) {
                                 Text(item)
@@ -109,7 +117,7 @@ fun NewsScreen() {
                     }
                 }
                 items(news) {
-                    if (searchQuery.contains(it.title) || searchQuery.isEmpty())
+                    if (it.title.contains(searchQuery) || searchQuery.isEmpty())
                         Card(modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp)) {
                             Column(
                                 modifier = Modifier.padding(

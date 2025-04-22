@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +22,11 @@ class MainActivity : ComponentActivity() {
             National53thUnitTestTheme {
                 val db = getRoomDataBase(this)
                 val navController = rememberNavController()
+
+                LaunchedEffect(Unit) {
+                    val users = UsersModel(db)
+                    users.db.alive()
+                }
 
                 CompositionLocalProvider(
                     LocalAuthNavController provides navController,
