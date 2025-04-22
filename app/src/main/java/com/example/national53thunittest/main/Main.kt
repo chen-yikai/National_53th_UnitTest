@@ -1,5 +1,7 @@
 package com.example.national53thunittest.main
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -91,7 +93,11 @@ fun Main() {
                     arguments = listOf(navArgument("id") {
                         type =
                             NavType.IntType
-                    })
+                    }),
+                    enterTransition = { slideInHorizontally { it } },
+                    exitTransition = { slideOutHorizontally { -it } },
+                    popEnterTransition = { slideInHorizontally { -it } },
+                    popExitTransition = { slideOutHorizontally { it } }
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getInt("id") ?: 0
                     NewsDetail(id)

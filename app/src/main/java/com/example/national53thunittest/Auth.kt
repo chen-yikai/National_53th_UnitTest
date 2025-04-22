@@ -5,7 +5,6 @@ import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -39,7 +38,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -183,6 +181,9 @@ fun SignUp() {
     var showAlert by remember { mutableStateOf(false) }
     val alertMsg = remember { mutableStateListOf<String>() }
 
+    var hidePassword by remember { mutableStateOf(true) }
+    var hidePasswordCheck by remember { mutableStateOf(true) }
+
     if (showAlert) {
         AuthAlertDialog(
             msg = alertMsg,
@@ -190,7 +191,11 @@ fun SignUp() {
         )
     }
 
-    Box(Modifier.statusBarsPadding()) {
+    Box(
+        Modifier
+            .statusBarsPadding()
+            .fillMaxSize()
+    ) {
         IconButton(
             onClick = { nav.popBackStack() },
             modifier = Modifier.align(Alignment.TopStart)
@@ -201,37 +206,37 @@ fun SignUp() {
             )
         }
         Column(
-            Modifier.fillMaxSize(),
+            Modifier
+                .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text("Register", fontWeight = FontWeight.Bold, fontSize = 30.sp)
             Sh(40.dp)
             AuthField(name, { name = it }, label = "姓名", isError = false)
             AuthField(email, { email = it }, label = "Email", isError = false)
-            var showPassword by remember { mutableStateOf(false) }
             AuthField(
                 password,
                 { password = it },
                 label = "密碼",
-                isPassword = showPassword,
+                isPassword = hidePassword,
                 trailingIcon = {
-                    IconButton(onClick = { showPassword = !showPassword }) {
+                    IconButton(onClick = { hidePassword = !hidePassword }) {
                         Icon(
-                            painter = painterResource(if (showPassword) R.drawable.visibility else R.drawable.visibility_off),
+                            painter = painterResource(if (hidePassword) R.drawable.visibility else R.drawable.visibility_off),
                             contentDescription = ""
                         )
                     }
                 })
-            var showPasswordCheck by remember { mutableStateOf(false) }
             AuthField(
                 passwordCheck,
                 { passwordCheck = it },
                 label = "再次輸入密碼",
                 isError = false,
+                isPassword = hidePasswordCheck,
                 trailingIcon = {
-                    IconButton(onClick = { showPasswordCheck = !showPasswordCheck }) {
+                    IconButton(onClick = { hidePasswordCheck = !hidePasswordCheck }) {
                         Icon(
-                            painter = painterResource(if (showPasswordCheck) R.drawable.visibility else R.drawable.visibility_off),
+                            painter = painterResource(if (hidePasswordCheck) R.drawable.visibility else R.drawable.visibility_off),
                             contentDescription = ""
                         )
                     }
@@ -263,6 +268,7 @@ fun SignUp() {
 
                 if (!error) {
                     usersModel.signUp(name, email, password)
+                    nav.navigate(AuthScreens.SignIn.name)
                 } else {
                     showAlert = true
                 }

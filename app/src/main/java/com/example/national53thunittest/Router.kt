@@ -11,7 +11,7 @@ fun Router() {
     val navController = LocalAuthNavController.current
 
     NavHost(
-        navController = navController, startDestination = AuthScreens.Main.name
+        navController = navController, startDestination = AuthScreens.SignIn.name
     ) {
         composable(AuthScreens.SignIn.name) { SignIn() }
         composable(AuthScreens.SignUp.name) { SignUp() }
