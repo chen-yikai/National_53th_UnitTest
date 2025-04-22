@@ -24,9 +24,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.room.util.TableInfo
 import kotlinx.coroutines.launch
 
@@ -84,11 +86,21 @@ fun Main() {
                 composable(MainScreens.Home.name) { HomeScreen() }
                 composable(MainScreens.Profile.name) { ProfileScreen() }
                 composable(MainScreens.News.name) { NewsScreen() }
+                composable(
+                    "${MainScreens.NewsDetail.name}/{id}",
+                    arguments = listOf(navArgument("id") {
+                        type =
+                            NavType.IntType
+                    })
+                ) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getInt("id") ?: 0
+                    NewsDetail(id)
+                }
             }
         }
     }
 }
 
 enum class MainScreens {
-    Home, Profile, News
+    Home, Profile, News, NewsDetail
 }

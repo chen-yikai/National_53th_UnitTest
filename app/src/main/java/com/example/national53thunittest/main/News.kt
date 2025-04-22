@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.example.national53thunittest.AuthField
+import com.example.national53thunittest.News
 import com.example.national53thunittest.getNews
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -56,9 +58,21 @@ fun NewsScreen() {
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
     var sortBy by remember { mutableIntStateOf(0) }
-    val news = getNews(context)
+    var news = remember { mutableStateListOf<News>() }
+
+    LaunchedEffect(Unit) {
+        news.addAll(getNews(context))
+    }
 
     LaunchedEffect(sortBy) {
+        val sortedNews = when (sortBy) {
+            0 -> news.sortedByDescending { it.id }
+            1 -> news.sortedByDescending { it.publishDate }
+            2 -> news.sortedByDescending { it.views }
+            else -> news.toList()
+        }
+        news.clear()
+        news.addAll(sortedNews)
     }
 
     Scaffold(topBar = {
@@ -118,7 +132,11 @@ fun NewsScreen() {
                 }
                 items(news) {
                     if (it.title.contains(searchQuery) || searchQuery.isEmpty())
-                        Card(modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp)) {
+                        Card(
+                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp),
+                            onClick = {
+                                nav.navigate("${MainScreens.NewsDetail}/${it.id}")
+                            }) {
                             Column(
                                 modifier = Modifier.padding(
                                     vertical = 10.dp,

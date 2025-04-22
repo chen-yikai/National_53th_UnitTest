@@ -1,6 +1,7 @@
 package com.example.national53thunittest.main
 
 import android.graphics.Paint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -77,7 +78,11 @@ fun HomeScreen() {
                         maxLines = 1,
                         fontSize = 20.sp,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(vertical = 10.dp)
+                        modifier = Modifier
+                            .padding(vertical = 10.dp)
+                            .clickable {
+                                nav.navigate("${MainScreens.NewsDetail.name}/${it.id}")
+                            }
                     )
                 }
                 count++
