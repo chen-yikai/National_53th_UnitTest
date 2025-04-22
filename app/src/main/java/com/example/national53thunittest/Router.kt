@@ -9,9 +9,10 @@ import com.example.national53thunittest.main.Main
 @Composable
 fun Router() {
     val navController = LocalAuthNavController.current
-    val context = LocalContext.current
 
-    NavHost(navController = navController, startDestination = AuthScreens.Main.name) {
+    NavHost(
+        navController = navController, startDestination = AuthScreens.Main.name
+    ) {
         composable(AuthScreens.SignIn.name) { SignIn() }
         composable(AuthScreens.SignUp.name) { SignUp() }
         composable(AuthScreens.Main.name) { Main() }

@@ -34,6 +34,12 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users WHERE email = :email AND password = :password")
     suspend fun checkPassword(email: String, password: String): Int
+
+    @Query("SELECT * FROM users WHERE email = :email")
+    suspend fun getInfo(email: String): Users
+
+    @Query("UPDATE users SET password = :password WHERE email = :email")
+    suspend fun updatePassword(password: String, email: String): Int
 }
 
 fun getRoomDataBase(context: Context): RoomDataBase {
@@ -68,5 +74,15 @@ class UsersModel(private val room: RoomDataBase) : ViewModel() {
     suspend fun signIn(email: String, password: String): Boolean {
         val count = db.checkPassword(email, password)
         return count > 0
+    }
+
+    suspend fun getInfo(email: String): Users {
+        return db.getInfo(email)
+    }
+
+    fun updatePassword(newPassword: String, email: String) {
+        viewModelScope.launch {
+            db.updatePassword(newPassword, email)
+        }
     }
 }

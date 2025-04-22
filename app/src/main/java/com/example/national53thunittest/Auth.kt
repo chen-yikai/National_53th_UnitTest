@@ -1,5 +1,6 @@
 package com.example.national53thunittest
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
 @Composable
 fun AuthField(
@@ -51,7 +53,7 @@ fun AuthField(
     isError: Boolean = false,
     isPassword: Boolean = false,
     tag: String = "",
-    trailingIcon: @Composable () -> Unit = {}
+    trailingIcon: @Composable () -> Unit = {}, modifier: Modifier = Modifier
 ) {
     TextField(
         value = value,
@@ -59,7 +61,8 @@ fun AuthField(
         placeholder = { Text(label) },
         modifier = Modifier
             .padding(vertical = 5.dp)
-            .testTag(tag),
+            .testTag(tag)
+            .then(modifier),
         colors =
             TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -82,6 +85,7 @@ fun SignIn() {
     val usersModel = UsersModel(db)
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val sharedPreferences = context.getSharedPreferences("app", Context.MODE_PRIVATE)
 
     var showAlert by remember { mutableStateOf(false) }
     val alertMsg = remember { mutableStateListOf<String>() }
@@ -96,6 +100,7 @@ fun SignIn() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text("Login", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         Sh(40.dp)
@@ -120,6 +125,9 @@ fun SignIn() {
                     val authed = usersModel.signIn(email, password)
                     if (authed) {
                         nav.navigate(AuthScreens.Main.name)
+                        sharedPreferences.edit() {
+                            putString("email", email)
+                        }
                     } else {
                         alertMsg.add(errorMsg?.errorMeg1_2.toString())
                         showAlert = true
