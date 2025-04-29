@@ -32,8 +32,13 @@ data class Error(
     @SerializedName("ErrorMeg3-2") val errorMeg3_2: String? = null
 )
 
-fun getError(context: Context, page: String): Error? {
-    context.assets.open("2.錯誤訊息庫_dev.json").bufferedReader().use {
+fun getError(context: Context, page: String, source: String = "dev"): Error? {
+    context.assets.open(
+        when (source) {
+            "test" -> "3.錯誤訊息庫_test.json"
+            else -> "2.錯誤訊息庫_dev.json"
+        }
+    ).bufferedReader().use {
         val data = Gson().fromJson(it, Array<Error>::class.java).toList()
         return data.find { item -> item.page == page }
     }

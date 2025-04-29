@@ -31,14 +31,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.room.util.TableInfo
 import kotlinx.coroutines.launch
 
 val LocalMainNavController = compositionLocalOf<NavHostController> { error("") }
 val LocalDrawerState = compositionLocalOf<DrawerState> { error("") }
 
 @Composable
-fun Main() {
+fun MainRouter() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

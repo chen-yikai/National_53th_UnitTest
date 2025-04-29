@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,8 +34,10 @@ fun NewsDetail(id: Int) {
     val context = LocalContext.current
     val news = getNews(context).find { it.id == id }
 
-
-    Column(modifier = Modifier.statusBarsPadding()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)
+        .statusBarsPadding()) {
         Row {
             IconButton(onClick = { nav.popBackStack() }) {
                 Icon(

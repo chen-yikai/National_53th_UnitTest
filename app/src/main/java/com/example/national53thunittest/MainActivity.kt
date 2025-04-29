@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     LocalAuthNavController provides navController,
                     LocalRoomDataBase provides db
                 ) {
-                    Router()
+                    AuthRouter()
                 }
             }
         }

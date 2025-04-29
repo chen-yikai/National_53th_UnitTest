@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import androidx.core.content.edit
+import java.nio.file.WatchEvent
 
 @Composable
 fun AuthField(
@@ -96,7 +97,7 @@ fun SignIn() {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag("SignInScreen"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -106,16 +107,17 @@ fun SignIn() {
             value = email,
             onValueChange = { email = it },
             label = "電子郵件",
-            tag = "hello"
+            tag = "emailInput"
         )
         AuthField(
             value = password,
             onValueChange = { password = it },
             label = "密碼",
             isPassword = true
+            , tag = "passwordInput"
         )
         Sh(40.dp)
-        Button(onClick = {
+        Button(modifier = Modifier.testTag("login"),onClick = {
             val errorMsg = getError(context, "LoginPage")
             alertMsg.clear()
             if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
