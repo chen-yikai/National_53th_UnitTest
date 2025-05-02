@@ -51,7 +51,7 @@ fun AuthField(
     label: String = "",
     isError: Boolean = false,
     isPassword: Boolean = false,
-    tag: String = "",
+    tag: String = "auth_field",
     trailingIcon: @Composable () -> Unit = {}, modifier: Modifier = Modifier
 ) {
     TextField(
@@ -97,7 +97,9 @@ fun SignIn() {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().testTag("SignInScreen"),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("SignInScreen"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -113,11 +115,10 @@ fun SignIn() {
             value = password,
             onValueChange = { password = it },
             label = "密碼",
-            isPassword = true
-            , tag = "passwordInput"
+            isPassword = true, tag = "passwordInput"
         )
         Sh(40.dp)
-        Button(modifier = Modifier.testTag("login"),onClick = {
+        Button(modifier = Modifier.testTag("login"), onClick = {
             val errorMsg = getError(context, "LoginPage")
             alertMsg.clear()
             if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -225,6 +226,7 @@ fun SignUp() {
                     IconButton(onClick = { hidePassword = !hidePassword }) {
                         Icon(
                             painter = painterResource(if (hidePassword) R.drawable.visibility else R.drawable.visibility_off),
+                            modifier = Modifier.testTag("toggle_visibility"),
                             contentDescription = ""
                         )
                     }
@@ -239,6 +241,7 @@ fun SignUp() {
                     IconButton(onClick = { hidePasswordCheck = !hidePasswordCheck }) {
                         Icon(
                             painter = painterResource(if (hidePasswordCheck) R.drawable.visibility else R.drawable.visibility_off),
+                            modifier = Modifier.testTag("toggle_visibility"),
                             contentDescription = ""
                         )
                     }
@@ -249,7 +252,7 @@ fun SignUp() {
                 alertMsg.clear()
                 val errorMsg = getError(context, "RegistrationPage")
                 var error = false
-                if (name.isEmpty() || name.length > 30) {
+                if (name.isEmpty() || name.length > 10) {
                     alertMsg.add(errorMsg?.errorMeg2_2.toString())
                     error = true
                 }
