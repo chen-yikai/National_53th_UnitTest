@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,13 +48,19 @@ fun HomeScreen() {
             .statusBarsPadding(),
     ) {
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+            IconButton(
+                onClick = { scope.launch { drawerState.open() } },
+                modifier = Modifier.testTag("open_drawer")
+            ) {
                 Icon(
                     Icons.Default.Menu,
                     contentDescription = ""
                 )
             }
-            IconButton(onClick = { nav.navigate(MainScreens.Profile.name) }) {
+            IconButton(
+                onClick = { nav.navigate(MainScreens.Profile.name) },
+                modifier = Modifier.testTag("nav_to_profile")
+            ) {
                 Icon(
                     Icons.Default.Person,
                     contentDescription = ""
@@ -71,7 +78,11 @@ fun HomeScreen() {
             }
             var count = 1;
             items(data) {
-                if (count <= 5) Row(modifier = Modifier.padding(vertical = 5.dp)) {
+                if (count <= 5) Row(
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
+                        .testTag("home_news_item")
+                ) {
                     val title = "${it.id}. ${it.title}"
                     Text(
                         if (title.length > 30) title.take(30) + "..." else title,

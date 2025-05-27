@@ -42,6 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import androidx.core.content.edit
+import com.example.national53thunittest.main.AuthScreens
+import com.example.national53thunittest.main.LocalMainNavController
+import com.example.national53thunittest.main.MainScreens
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.nio.file.WatchEvent
 
 @Composable
@@ -77,7 +82,7 @@ fun AuthField(
 
 @Composable
 fun SignIn() {
-    val nav = LocalAuthNavController.current
+    val nav = LocalMainNavController.current
     val context = LocalContext.current
     val db = LocalRoomDataBase.current
     val scope = rememberCoroutineScope()
@@ -125,7 +130,9 @@ fun SignIn() {
                 scope.launch {
                     val authed = usersModel.signIn(email, password)
                     if (authed) {
-                        nav.navigate(AuthScreens.Main.name)
+                        withContext(Dispatchers.Main) {
+                            nav.navigate(MainScreens.Home.name)
+                        }
                         sharedPreferences.edit() {
                             putString("email", email)
                         }
@@ -172,7 +179,7 @@ fun AuthAlertDialog(msg: List<String>, dismiss: () -> Unit) {
 
 @Composable
 fun SignUp() {
-    val nav = LocalAuthNavController.current
+    val nav = LocalMainNavController.current
     val database = LocalRoomDataBase.current
     val usersModel = UsersModel(database)
     val context = LocalContext.current
@@ -241,7 +248,7 @@ fun SignUp() {
                     IconButton(onClick = { hidePasswordCheck = !hidePasswordCheck }) {
                         Icon(
                             painter = painterResource(if (hidePasswordCheck) R.drawable.visibility else R.drawable.visibility_off),
-                            modifier = Modifier.testTag("toggle_visibility"),
+                            modifier = Modifier.testTag("toggle_visibility_a"),
                             contentDescription = ""
                         )
                     }
@@ -249,6 +256,7 @@ fun SignUp() {
             )
             Sh(40.dp)
             fun checkFormat() {
+                val passWord = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,15}$"
                 alertMsg.clear()
                 val errorMsg = getError(context, "RegistrationPage")
                 var error = false
@@ -262,7 +270,10 @@ fun SignUp() {
                     alertMsg.add(errorMsg?.errorMeg2_3.toString())
                     error = true
                 }
-                if (password.isEmpty() || !password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,15}$".toRegex())) {
+                if (password.isEmpty() || !password.matches(passWord.toRegex()) || !passwordCheck.matches(
+                        passWord.toRegex()
+                    )
+                ) {
                     alertMsg.add(errorMsg?.errorMeg2_4.toString())
                     error = true
                 }

@@ -41,12 +41,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.national53thunittest.AuthScreens
 import com.example.national53thunittest.LocalAuthNavController
 import com.example.national53thunittest.LocalRoomDataBase
 import com.example.national53thunittest.Users

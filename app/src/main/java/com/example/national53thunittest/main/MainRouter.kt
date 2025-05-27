@@ -1,5 +1,7 @@
 package com.example.national53thunittest.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +26,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,6 +34,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.national53thunittest.SignIn
+import com.example.national53thunittest.SignUp
 import kotlinx.coroutines.launch
 
 val LocalMainNavController = compositionLocalOf<NavHostController> { error("") }
@@ -43,13 +48,14 @@ fun MainRouter() {
     val scope = rememberCoroutineScope()
 
     CompositionLocalProvider(
-        LocalMainNavController provides navController,
-        LocalDrawerState provides drawerState
+        LocalMainNavController provides navController, LocalDrawerState provides drawerState
     ) {
         ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
             ModalDrawerSheet() {
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .testTag(if (drawerState.isOpen) "drawer" else ""),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     NavigationDrawerItem(
@@ -61,8 +67,7 @@ fun MainRouter() {
                             scope.launch {
                                 drawerState.close()
                             }
-                        }
-                    )
+                        })
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -73,31 +78,35 @@ fun MainRouter() {
                             scope.launch {
                                 drawerState.close()
                             }
-                        }) {
+                        }, modifier = Modifier.testTag("close_drawer")) {
                             Icon(
-                                Icons.Default.ArrowBack,
-                                contentDescription = ""
+                                Icons.Default.ArrowBack, contentDescription = ""
                             )
                         }
                     }
                 }
             }
         }) {
-            NavHost(navController = navController, startDestination = MainScreens.Home.name) {
+            NavHost(
+                navController = navController,
+                startDestination = AuthScreens.SignIn.name,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None }) {
+                composable(AuthScreens.SignIn.name) { SignIn() }
+                composable(AuthScreens.SignUp.name) { SignUp() }
+
                 composable(MainScreens.Home.name) { HomeScreen() }
                 composable(MainScreens.Profile.name) { ProfileScreen() }
                 composable(MainScreens.News.name) { NewsScreen() }
                 composable(
                     "${MainScreens.NewsDetail.name}/{id}",
                     arguments = listOf(navArgument("id") {
-                        type =
-                            NavType.IntType
+                        type = NavType.IntType
                     }),
                     enterTransition = { slideInHorizontally { it } },
                     exitTransition = { slideOutHorizontally { -it } },
                     popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } }
-                ) { backStackEntry ->
+                    popExitTransition = { slideOutHorizontally { it } }) { backStackEntry ->
                     val id = backStackEntry.arguments?.getInt("id") ?: 0
                     NewsDetail(id)
                 }
@@ -108,4 +117,8 @@ fun MainRouter() {
 
 enum class MainScreens {
     Home, Profile, News, NewsDetail
+}
+
+enum class AuthScreens {
+    SignIn, SignUp
 }

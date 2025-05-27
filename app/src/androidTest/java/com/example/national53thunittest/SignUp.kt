@@ -26,6 +26,11 @@ class SignUp {
     val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     val error: Error? = getError(context, "RegistrationPage", "test")
 
+    val name = rule.onNodeWithText("姓名")
+    val email = rule.onNodeWithText("Email")
+    val password = rule.onNodeWithText("密碼")
+    val passwordCheck = rule.onNodeWithText("再次輸入密碼")
+
     fun submitForm(meanWhiled: () -> Unit) {
         rule.onNodeWithText("註冊").performClick()
         meanWhiled()
@@ -41,22 +46,21 @@ class SignUp {
     @Test
     fun `1 Empty Field WILL Get Error`() {
         rule.onNodeWithText("Register").assertExists()
-        rule.onAllNodesWithTag("auth_field").fetchSemanticsNodes()
-            .forEachIndexed { index, _ ->
-                rule.onAllNodesWithTag("auth_field")[index].performTextClearance()
-            }
         submitForm {
             error?.let {
-                rule.onNodeWithText(it.errorMeg2_1.toString()).assertExists()
-                rule.onNodeWithText(it.errorMeg2_2.toString()).assertExists()
-                rule.onNodeWithText(it.errorMeg2_3.toString()).assertExists()
+                rule.onNodeWithText(it.errorMeg2_4.toString(), useUnmergedTree = true)
+                    .assertExists()
+                rule.onNodeWithText(it.errorMeg2_2.toString(), useUnmergedTree = true)
+                    .assertExists()
+                rule.onNodeWithText(it.errorMeg2_3.toString(), useUnmergedTree = true)
+                    .assertExists()
             }
         }
     }
 
     @Test
     fun `2 Name can not contain more than 10 characters`() {
-        rule.onNodeWithText("姓名").assertExists().performTextInput("t".repeat(12))
+        name.assertExists().performTextInput("t".repeat(12))
         submitForm {
             error?.let {
                 rule.onNodeWithText(it.errorMeg2_2.toString()).assertExists()
@@ -66,7 +70,7 @@ class SignUp {
 
     @Test
     fun `3 Email can not contain more than 30 characters`() {
-        rule.onNodeWithText("Email").assertExists()
+        email.assertExists()
             .performTextInput("t".repeat(31) + "@example.com")
         submitForm {
             error?.let {
@@ -77,7 +81,7 @@ class SignUp {
 
     @Test
     fun `4 Check email format`() {
-        rule.onNodeWithText("Email").assertExists().performTextInput("example")
+        email.assertExists().performTextInput("example")
         submitForm {
             error?.let {
                 rule.onNodeWithText(it.errorMeg2_3.toString()).assertExists()
@@ -87,7 +91,7 @@ class SignUp {
 
     @Test
     fun `5 Check password format`() {
-        rule.onNodeWithText("密碼").assertExists().performTextInput("example")
+        password.assertExists().performTextInput("example")
         submitForm {
             error?.let {
                 rule.onNodeWithText(it.errorMeg2_4.toString()).assertExists()
@@ -95,19 +99,44 @@ class SignUp {
         }
     }
 
-    @Ignore("How to check whether the password dot is show")
+    @Test
     fun `6 Change the visibility of the password to show`() {
-        val password = rule.onNodeWithText("密碼")
-        val passwordCheck = rule.onNodeWithText("再次輸入密碼")
-
         password.assertExists().performTextInput("example")
+        rule.onNodeWithText("example").assertDoesNotExist()
+        rule.onNodeWithTag("toggle_visibility", useUnmergedTree = true).performClick()
+        rule.onNodeWithText("example").assertExists()
+    }
+
+    @Test
+    fun `7 ReEnter password got error`() {
+        password.assertExists().performTextInput("Abc123456")
         passwordCheck.assertExists().performTextInput("example")
+        submitForm {
+            error?.let {
+                rule.onNodeWithText(it.errorMeg2_4.toString()).assertExists()
+            }
+        }
+    }
 
-        // when hidden
-        password.assert(hasText("hello"))
+    @Test
+    fun `8 Password and ReEnter password are different got error`() {
+        password.assertExists().performTextInput("Abc123456")
+        passwordCheck.assertExists().performTextInput("Abc1234567")
+        submitForm {
+            error?.let {
+                rule.onNodeWithText(it.errorMeg2_1.toString()).assertExists()
+            }
+        }
+    }
 
-        rule.onNodeWithTag("toggle_visibility").performClick()
+    @Test
+    fun `9 Nav to signIn screen after finish signUp`() {
+        name.performTextInput("user")
+        email.performTextInput("example@example.com")
+        password.performTextInput("Abc123456")
+        passwordCheck.performTextInput("Abc123456")
+
+        rule.onNodeWithText("註冊").performClick()
+        rule.onNodeWithText("登入").assertExists()
     }
 }
-
-

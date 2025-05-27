@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,10 +35,13 @@ fun NewsDetail(id: Int) {
     val context = LocalContext.current
     val news = getNews(context).find { it.id == id }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)
-        .statusBarsPadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .statusBarsPadding()
+            .testTag("news_details_screen")
+    ) {
         Row {
             IconButton(onClick = { nav.popBackStack() }) {
                 Icon(
