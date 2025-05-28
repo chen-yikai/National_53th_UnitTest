@@ -39,13 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.national53thunittest.LocalAuthNavController
 import com.example.national53thunittest.LocalRoomDataBase
 import com.example.national53thunittest.Users
 import com.example.national53thunittest.UsersModel
@@ -59,7 +59,7 @@ fun ProfileScreen() {
     val nav = LocalMainNavController.current
     val context = LocalContext.current
     val db = LocalRoomDataBase.current
-    val authNav = LocalAuthNavController.current
+    val authNav = LocalMainNavController.current
     val usersModel = UsersModel(db)
     val email = context.getSharedPreferences("app", Context.MODE_PRIVATE).getString("email", "")
     var info by remember { mutableStateOf<Users?>(null) }
@@ -94,7 +94,7 @@ fun ProfileScreen() {
                     InfoList("Email", it.email)
                 }
                 Spacer(Modifier.height(20.dp))
-                FilledTonalButton(onClick = { showEditPassword = true }) { Text("修改密碼") }
+                FilledTonalButton(onClick = { showEditPassword = true }, modifier = Modifier.testTag("change_password")) { Text("修改密碼") }
             }
             Column(
                 modifier = Modifier
@@ -104,7 +104,7 @@ fun ProfileScreen() {
                 Button(onClick = {
                     authNav.navigate(AuthScreens.SignIn.name)
                     context.getSharedPreferences("app", Context.MODE_PRIVATE).edit() { clear() }
-                }) {
+                },modifier = Modifier.testTag("sign_out")) {
                     Text("登出")
                 }
             }
@@ -128,7 +128,7 @@ fun EditPassword(dismiss: () -> Unit) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(15.dp))
                 .background(Color.White)
-                .padding(horizontal = 20.dp, vertical = 10.dp),
+                .padding(horizontal = 20.dp, vertical = 10.dp).testTag("change_password_dialog"),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("修改密碼")
@@ -184,6 +184,10 @@ fun EditPassword(dismiss: () -> Unit) {
 fun InfoList(label: String, content: String, size: TextUnit = 20.sp) {
     Column {
         Text(label, color = Color.Gray)
-        Text(content, fontWeight = FontWeight.Bold, fontSize = size)
+        Text(
+            content, fontWeight = FontWeight.Bold, fontSize = size, modifier = Modifier.testTag(
+                label
+            )
+        )
     }
 }

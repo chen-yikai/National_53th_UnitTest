@@ -8,6 +8,7 @@ import org.junit.runners.Suite
 @Suite.SuiteClasses(
     SignUp::class,
     SignIn::class,
-    Home::class
+    Home::class,
+    Profile::class
 )
 class UnitTestEntry
