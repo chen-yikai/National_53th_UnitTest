@@ -42,5 +42,4 @@ class Profile {
         rule.onNodeWithTag("sign_out").performClick()
         rule.onNodeWithTag("SignInScreen").assertExists()
     }
-
 }

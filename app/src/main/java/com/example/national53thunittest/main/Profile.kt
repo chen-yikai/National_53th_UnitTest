@@ -85,7 +85,7 @@ fun ProfileScreen() {
             Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .padding(20.dp), verticalArrangement = Arrangement.SpaceBetween
+                .padding(20.dp).testTag("profile_screen"), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 info?.let {
@@ -94,7 +94,10 @@ fun ProfileScreen() {
                     InfoList("Email", it.email)
                 }
                 Spacer(Modifier.height(20.dp))
-                FilledTonalButton(onClick = { showEditPassword = true }, modifier = Modifier.testTag("change_password")) { Text("修改密碼") }
+                FilledTonalButton(
+                    onClick = { showEditPassword = true },
+                    modifier = Modifier.testTag("change_password")
+                ) { Text("修改密碼") }
             }
             Column(
                 modifier = Modifier
@@ -104,7 +107,7 @@ fun ProfileScreen() {
                 Button(onClick = {
                     authNav.navigate(AuthScreens.SignIn.name)
                     context.getSharedPreferences("app", Context.MODE_PRIVATE).edit() { clear() }
-                },modifier = Modifier.testTag("sign_out")) {
+                }, modifier = Modifier.testTag("sign_out")) {
                     Text("登出")
                 }
             }
@@ -128,7 +131,8 @@ fun EditPassword(dismiss: () -> Unit) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(15.dp))
                 .background(Color.White)
-                .padding(horizontal = 20.dp, vertical = 10.dp).testTag("change_password_dialog"),
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .testTag("change_password_dialog"),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("修改密碼")
@@ -147,13 +151,18 @@ fun EditPassword(dismiss: () -> Unit) {
                     }
                 }
             } else {
-                AuthField(password, { password = it }, label = "新密碼")
-                AuthField(passwordCheck, { passwordCheck = it }, label = "確認新密碼")
+                AuthField(password, { password = it }, label = "新密碼", tag = "new_password")
+                AuthField(
+                    passwordCheck,
+                    { passwordCheck = it },
+                    label = "確認新密碼",
+                    tag = "check_new_password"
+                )
             }
             Spacer(Modifier.height(20.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = dismiss) { Text("取消") }
-                TextButton(onClick = {
+                TextButton(modifier = Modifier.testTag("submit_button"), onClick = {
                     if (errorMsg.isNotEmpty()) {
                         errorMsg.clear()
                     } else {

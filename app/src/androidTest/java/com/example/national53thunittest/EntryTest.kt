@@ -9,6 +9,7 @@ import org.junit.runners.Suite
     SignUp::class,
     SignIn::class,
     Home::class,
-    Profile::class
+    Profile::class,
+    ChangePassword::class
 )
 class UnitTestEntry
