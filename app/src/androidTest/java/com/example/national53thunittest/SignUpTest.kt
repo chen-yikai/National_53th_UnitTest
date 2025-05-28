@@ -1,26 +1,23 @@
 package com.example.national53thunittest
 
 import android.content.Context
-import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performGesture
-import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-class SignUp {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class SignUpTest {
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
     val context: Context = InstrumentationRegistry.getInstrumentation().targetContext

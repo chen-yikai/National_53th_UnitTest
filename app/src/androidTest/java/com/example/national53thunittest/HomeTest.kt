@@ -8,18 +8,22 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-class Home {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+class HomeTest {
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before
     fun Setup() {
-        Utils.signIn(rule)
+        signUp(rule)
+        signIn(rule)
     }
 
     @Test

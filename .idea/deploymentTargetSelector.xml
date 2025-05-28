@@ -15,33 +15,25 @@
       </SelectionState>
       <SelectionState runConfigName="UnitTestEntry">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-28T04:56:45.987676Z">
+        <DropdownSelection timestamp="2025-05-28T13:55:57.698475Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/elias/.android/avd/Pixel_8_API_32.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/elias/.android/avd/Pixel_9_V16.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Home">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-27T16:31:56.203361Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/elias/.android/avd/Pixel_6_Pro.avd" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection />
-      </SelectionState>
-      <SelectionState runConfigName="1 Wrong password format show error()">
+      <SelectionState runConfigName="NewsTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ChangePassword">
+      <SelectionState runConfigName="1 List view show all details()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="4 SignOut enter old password will failed signIn()">
+      <SelectionState runConfigName="4 Click list to nav to news_details()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="5 Search news()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

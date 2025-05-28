@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,12 +103,12 @@ fun NewsScreen() {
                     "搜尋",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(1f), tag = "search_news"
                 )
                 Spacer(Modifier.width(10.dp))
                 FilledTonalButton(onClick = {
                     searchQuery = searchInput
-                }) {
+                }, modifier = Modifier.testTag("search_button")) {
                     Icon(Icons.Default.Search, contentDescription = "")
                 }
             }
@@ -133,7 +134,9 @@ fun NewsScreen() {
                 items(news) {
                     if (it.title.contains(searchQuery) || searchQuery.isEmpty())
                         Card(
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp),
+                            modifier = Modifier
+                                .padding(vertical = 10.dp, horizontal = 5.dp)
+                                .testTag("news_card"),
                             onClick = {
                                 nav.navigate("${MainScreens.NewsDetail}/${it.id}")
                             }) {
@@ -146,17 +149,24 @@ fun NewsScreen() {
                                 Text(
                                     "${it.id}. ${it.title}",
                                     fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.testTag("title")
                                 )
                                 Spacer(modifier = Modifier.height(20.dp))
-                                Text(it.organizer)
+                                Text(it.organizer, modifier = Modifier.testTag("organizer"))
                                 Spacer(Modifier.height(5.dp))
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text(it.publishDate)
-                                    Text("觀看次數: ${it.views}")
+                                    Text(
+                                        it.publishDate,
+                                        modifier = Modifier.testTag("publish_date")
+                                    )
+                                    Text(
+                                        "觀看次數: ${it.views}",
+                                        modifier = Modifier.testTag("view_count")
+                                    )
                                 }
                             }
                         }
