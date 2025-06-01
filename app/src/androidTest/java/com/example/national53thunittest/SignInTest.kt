@@ -36,7 +36,7 @@ class SignInTest {
 
     @Before
     fun setUp() {
-        signUp(rule)
+        performSignUp(rule)
     }
 
     @Test

@@ -43,7 +43,10 @@ fun NewsDetail(id: Int) {
             .testTag("news_details_screen")
     ) {
         Row {
-            IconButton(onClick = { nav.popBackStack() }) {
+            IconButton(
+                onClick = { nav.popBackStack() },
+                modifier = Modifier.testTag("back_to_news")
+            ) {
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = ""
@@ -59,24 +62,24 @@ fun NewsDetail(id: Int) {
                             Text(
                                 "${it.id}. ${it.title}",
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold, modifier = Modifier.testTag("title")
                             )
                             Spacer(Modifier.height(10.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(it.organizer)
-                                Text(it.publishDate)
+                                Text(it.organizer, modifier = Modifier.testTag("organizer"))
+                                Text(it.publishDate, modifier = Modifier.testTag("publishDate"))
                             }
-                            Text("觀看次數: ${it.views}")
+                            Text("觀看次數: ${it.views}", modifier = Modifier.testTag("views"))
                         }
                     }
                     Spacer(Modifier.height(20.dp))
                 }
             }
             item {
-                Text(news?.content.toString())
+                Text(news?.content.toString(), modifier = Modifier.testTag("content"))
             }
         }
     }

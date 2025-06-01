@@ -1,5 +1,6 @@
 package com.example.national53thunittest.main
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,12 +45,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.example.national53thunittest.AuthField
 import com.example.national53thunittest.News
+import com.example.national53thunittest.R
 import com.example.national53thunittest.getNews
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -60,16 +63,17 @@ fun NewsScreen() {
     var searchQuery by remember { mutableStateOf("") }
     var sortBy by remember { mutableIntStateOf(0) }
     var news = remember { mutableStateListOf<News>() }
+    var isAsc by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         news.addAll(getNews(context))
     }
 
-    LaunchedEffect(sortBy) {
+    LaunchedEffect(sortBy, isAsc) {
         val sortedNews = when (sortBy) {
-            0 -> news.sortedByDescending { it.id }
-            1 -> news.sortedByDescending { it.publishDate }
-            2 -> news.sortedByDescending { it.views }
+            0 -> if (!isAsc) news.sortedByDescending { it.id } else news.sortedBy { it.id }
+            1 -> if (!isAsc) news.sortedByDescending { it.publishDate } else news.sortedBy { it.publishDate }
+            2 -> if (!isAsc) news.sortedByDescending { it.views } else news.sortedBy { it.views }
             else -> news.toList()
         }
         news.clear()
@@ -91,6 +95,7 @@ fun NewsScreen() {
                 .fillMaxSize()
                 .padding(PaddingValues(top = innerPadding.calculateTopPadding()))
                 .padding(horizontal = 20.dp)
+                .testTag("news_screen")
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -117,16 +122,39 @@ fun NewsScreen() {
             LazyColumn(Modifier.clip(RoundedCornerShape(20.dp))) {
                 stickyHeader {
                     Spacer(Modifier.height(11.dp))
-                    SingleChoiceSegmentedButtonRow(modifier = androidx.compose.ui.Modifier.Companion.fillMaxWidth()) {
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                         items.fastForEachIndexed { index, item ->
                             SegmentedButton(
                                 selected = index == sortBy,
                                 onClick = {
-                                    sortBy = index
+                                    if (index == sortBy) {
+                                        isAsc = !isAsc
+                                    } else {
+                                        sortBy = index
+                                        isAsc = false
+                                    }
                                 },
-                                shape = SegmentedButtonDefaults.itemShape(index, items.size)
+                                icon = {
+                                    if (index == sortBy)
+                                        if (isAsc)
+                                            Icon(
+                                                painter = painterResource(R.drawable.outline_arrow_upward_24),
+                                                contentDescription = null,
+                                                modifier = Modifier.testTag("asc")
+                                            )
+                                        else
+                                            Icon(
+                                                painter = painterResource(R.drawable.outline_arrow_downward_24),
+                                                contentDescription = null,
+                                                modifier = Modifier.testTag("des")
+                                            )
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(index, items.size),
+                                modifier = Modifier.testTag(item)
                             ) {
-                                Text(item)
+                                Row {
+                                    Text(item)
+                                }
                             }
                         }
                     }
@@ -136,7 +164,8 @@ fun NewsScreen() {
                         Card(
                             modifier = Modifier
                                 .padding(vertical = 10.dp, horizontal = 5.dp)
-                                .testTag("news_card"),
+                                .testTag("news_card")
+                                .testTag("news_card_${it.id}"),
                             onClick = {
                                 nav.navigate("${MainScreens.NewsDetail}/${it.id}")
                             }) {
@@ -150,7 +179,8 @@ fun NewsScreen() {
                                     "${it.id}. ${it.title}",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.testTag("title")
+                                    modifier = Modifier
+                                        .testTag("title")
                                 )
                                 Spacer(modifier = Modifier.height(20.dp))
                                 Text(it.organizer, modifier = Modifier.testTag("organizer"))

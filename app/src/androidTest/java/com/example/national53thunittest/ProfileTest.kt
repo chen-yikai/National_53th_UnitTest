@@ -20,8 +20,8 @@ class ProfileTest {
 
     @Before
     fun setUp() {
-        signUp(rule)
-        signIn(rule)
+        performSignUp(rule)
+        performSignIn(rule)
         rule.onNodeWithTag("nav_to_profile").performClick()
     }
 

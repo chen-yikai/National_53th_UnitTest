@@ -1,5 +1,6 @@
 package com.example.national53thunittest
 
+import android.util.Log
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -24,8 +25,8 @@ class NewsTest {
 
     @Before
     fun setUp() {
-        signUp(rule)
-        signIn(rule)
+        performSignUp(rule)
+        performSignIn(rule)
         rule.onNodeWithTag("open_drawer").performClick()
         rule.onNodeWithText("最新消息").performClick()
     }
@@ -46,13 +47,26 @@ class NewsTest {
     }
 
     @Test
-    fun `2`() {
-
+    fun `2 Default list is item number dsc`() {
+        var newsList = mutableListOf<String>()
+        rule.onAllNodesWithTag("news_card_").fetchSemanticsNodes().forEach {
+            newsList.add(it.config.toString())
+        }
+        assertEquals(true, newsList.sorted().reversed() == newsList)
     }
 
     @Test
-    fun `3`() {
+    fun `3 Click sort button to change sort type or DES ASC`() {
+        performToggleSort("編號", true)
+        performToggleSort("發布日期")
+        performToggleSort("瀏覽數")
+    }
 
+    fun performToggleSort(tag: String, init: Boolean = false) {
+        if (!init) rule.onNodeWithTag(tag, useUnmergedTree = true).performClick()
+        rule.onNodeWithTag("des", useUnmergedTree = true).assertExists()
+        rule.onNodeWithTag(tag, useUnmergedTree = true).performClick()
+        rule.onNodeWithTag("asc", useUnmergedTree = true).assertExists()
     }
 
     @Test
@@ -63,9 +77,10 @@ class NewsTest {
 
     @Test
     fun `5 Search news`() {
-        rule.onNodeWithTag("search_news").performTextInput("航太")
+        rule.onNodeWithTag("search_news").performTextInput("美")
         rule.onNodeWithTag("search_button").performClick()
-        val searchResult = rule.onAllNodesWithText("航太", useUnmergedTree = true)
-        assertEquals(true, searchResult.fetchSemanticsNodes().size > 1)
+        rule.onAllNodesWithTag("title").fetchSemanticsNodes().forEach {
+            assertEquals(true, it.config.toString().contains("美"))
+        }
     }
 }

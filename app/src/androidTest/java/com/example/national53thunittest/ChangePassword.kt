@@ -8,7 +8,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
@@ -34,8 +33,8 @@ class ChangePassword {
     }
 
     fun setUp() {
-        signUp(rule)
-        signIn(rule)
+        performSignUp(rule)
+        performSignIn(rule)
         rule.onNodeWithTag("nav_to_profile").assertExists().performClick()
         rule.onNodeWithTag("change_password").assertExists().performClick()
     }

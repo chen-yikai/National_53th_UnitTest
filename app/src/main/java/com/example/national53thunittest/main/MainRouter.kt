@@ -90,6 +90,7 @@ fun MainRouter() {
             NavHost(
                 navController = navController,
                 startDestination = AuthScreens.SignIn.name,
+//                startDestination = MainScreens.News.name,
                 enterTransition = { EnterTransition.None },
                 exitTransition = { ExitTransition.None }) {
                 composable(AuthScreens.SignIn.name) { SignIn() }

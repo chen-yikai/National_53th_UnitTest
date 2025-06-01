@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 import androidx.core.content.edit
 import com.example.national53thunittest.main.AuthScreens
 import com.example.national53thunittest.main.LocalMainNavController
+import com.example.national53thunittest.main.MainRouter
 import com.example.national53thunittest.main.MainScreens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -154,6 +156,12 @@ fun SignIn() {
             modifier = Modifier.testTag("nav_signUp")
         ) {
             Text("註冊")
+        }
+        Sh()
+        TextButton(onClick = {
+            nav.navigate(MainScreens.Home.name)
+        }) {
+            Text("BYPASS")
         }
     }
 }

@@ -15,11 +15,13 @@ import org.junit.runners.Suite
     SignInTest::class,
     HomeTest::class,
     ProfileTest::class,
-    ChangePassword::class
+    ChangePassword::class,
+    NewsTest::class,
+    NewsDetailsTest::class
 )
 class UnitTestEntry
 
-fun signIn(rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>) {
+fun performSignIn(rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>) {
     val emailInput = rule.onNodeWithTag("emailInput")
     val passwordInput = rule.onNodeWithTag("passwordInput")
     val loginButton = rule.onNodeWithTag("login")
@@ -29,7 +31,7 @@ fun signIn(rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, Main
     loginButton.performClick()
 }
 
-fun signUp(
+fun performSignUp(
     rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>,
     runNavToSignUp: Boolean = true
 ) {

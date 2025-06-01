@@ -22,8 +22,8 @@ class HomeTest {
 
     @Before
     fun Setup() {
-        signUp(rule)
-        signIn(rule)
+        performSignUp(rule)
+        performSignIn(rule)
     }
 
     @Test
